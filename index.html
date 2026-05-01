@@ -19,40 +19,55 @@
 </head>
 <body>
 
-<main id="title-screen" class="screen">
+<!-- 1. Welcome -->
+<main id="welcome-screen" class="screen">
   <h1 class="brand">Series<span class="dash">Dash</span></h1>
-  <p class="tagline">Pick the BEST test. Beat the timer. Don't blink.</p>
+  <p class="tagline">Welcome.</p>
+  <form id="welcome-form" class="welcome-form">
+    <label for="player-name">Your name <span class="optional">— optional</span></label>
+    <input id="player-name" type="text" placeholder="anonymous" maxlength="40" autocomplete="off">
+    <button id="welcome-continue" class="big-btn" type="submit">Continue</button>
+  </form>
+</main>
+
+<!-- 2. Mode select -->
+<main id="mode-screen" class="screen hidden">
+  <h1 class="brand">Series<span class="dash">Dash</span></h1>
+  <p class="tagline" id="mode-greeting">Pick the BEST test. Beat the timer.</p>
   <div class="rules">
     <ul>
       <li>Only the <b>single best</b> test counts — overkill (e.g. Ratio on a geometric series) is wrong.</li>
       <li>Wrong answer or timeout costs a life. <b>3 lives</b> total.</li>
-      <li>Optional Convergent / Divergent guess: <b>±50</b> bonus points.</li>
-      <li>Picking <b>Divergence Test</b> auto-claims "diverges"; picking <b>AST</b> auto-claims "converges" — bonus applied automatically unless you've already picked the opposite.</li>
+      <li>After a correct test (other than Divergence/AST) you get a <b>10 s bonus prompt</b> to call convergent or divergent — multiplies your points by <b>1.3 / 0.7 / 1.0</b>.</li>
     </ul>
   </div>
   <div class="mode-select">
     <button id="start-dash" class="mode-card">
       <div class="mode-name">Dash</div>
-      <div class="mode-meta">15 s start · −0.5 s per correct · floor 3 s</div>
+      <div class="mode-meta">15 s start · −0.3 s per correct · floor 4.5 s · scored</div>
       <div class="mode-blurb">Speed pressure. Gets harder as you go.</div>
     </button>
     <button id="start-stress" class="mode-card stress">
       <div class="mode-name">Stress-Free</div>
-      <div class="mode-meta">60 s flat · no decrement</div>
+      <div class="mode-meta">60 s flat · no decrement · unscored</div>
       <div class="mode-blurb">Practice mode. Take your time, drill the patterns.</div>
     </button>
   </div>
   <p class="hint">Tip: number keys <kbd>1</kbd>–<kbd>9</kbd> map to the test buttons (reading order).</p>
 </main>
 
+<!-- 3. Game -->
 <main id="game-screen" class="screen hidden">
-  <div class="mode-pill" id="mode-pill">Dash</div>
+  <div class="game-head">
+    <div class="mode-pill" id="mode-pill">Dash</div>
+    <div class="player-pill" id="player-pill"></div>
+  </div>
   <div class="hud">
-    <div class="hud-item"><span class="lbl">Score</span><span id="score">0</span></div>
+    <div class="hud-item" id="hud-score"><span class="lbl">Score</span><span id="score">0</span></div>
     <div class="hud-item"><span class="lbl">Streak</span><span id="streak">0</span></div>
     <div class="hud-item"><span class="lbl">Lives</span><span id="lives">●●●</span></div>
     <div class="hud-item"><span class="lbl">Budget</span><span id="budget">15.0s</span></div>
-    <div class="hud-item"><span class="lbl">Best</span><span id="hi-score">0</span></div>
+    <div class="hud-item" id="hud-best"><span class="lbl">Best</span><span id="hi-score">0</span></div>
   </div>
 
   <div class="timer-shell">
@@ -66,24 +81,59 @@
     </div>
   </section>
 
-  <section class="buttons-grid" id="tests-grid">
-    <!-- populated by JS -->
-  </section>
+  <section class="buttons-grid" id="tests-grid"></section>
 
   <div class="feedback" id="feedback"></div>
 </main>
 
+<!-- 4. Game over -->
 <main id="game-over-screen" class="screen hidden">
   <h2 class="brand small">Run over.</h2>
+  <p class="final-line" id="final-name-line">Player: <span id="final-name" class="num">anonymous</span></p>
   <p class="final-line">Mode: <span id="final-mode" class="num">Dash</span></p>
-  <p class="final-line">Final score: <span id="final-score" class="num">0</span></p>
+  <p class="final-line" id="final-score-line">Final score: <span id="final-score" class="num">0</span></p>
   <p class="final-line">Best streak: <span id="final-streak" class="num">0</span></p>
-  <p class="final-line">Best ever (this mode): <span id="final-best" class="num">0</span></p>
+  <p class="final-line" id="final-best-line">Best ever (this mode): <span id="final-best" class="num">0</span></p>
   <div class="over-actions">
     <button id="restart-btn" class="big-btn">Run again</button>
     <button id="menu-btn" class="secondary-btn">Change mode</button>
   </div>
+
+  <section class="review-section" id="review-section">
+    <h3>Review</h3>
+    <p class="review-help">Every series you saw, what you picked, and the canonical answer.</p>
+    <div class="review-list" id="review-list"></div>
+  </section>
 </main>
+
+<!-- Pre-round "get ready" countdown -->
+<div id="ready-overlay" class="overlay hidden">
+  <div class="ready-card">
+    <div class="ready-label" id="ready-label">Get ready</div>
+    <div class="ready-num" id="ready-num">3</div>
+  </div>
+</div>
+
+<!-- Conv/Div bonus overlay -->
+<div id="conv-overlay" class="overlay hidden">
+  <div class="conv-modal">
+    <div class="conv-modal-head">
+      <span class="conv-pill">✓ Correct test — bonus round</span>
+      <span class="conv-timer-text" id="conv-timer-text">10.0</span>
+    </div>
+    <div class="conv-timer-shell">
+      <div class="conv-timer-bar" id="conv-timer-bar"></div>
+    </div>
+    <div class="conv-series" id="conv-series"></div>
+    <p class="conv-prompt">Does this series converge?</p>
+    <div class="conv-buttons">
+      <button class="conv-pick" id="conv-yes" data-conv="true">Convergent <kbd>C</kbd></button>
+      <button class="conv-pick" id="conv-no" data-conv="false">Divergent <kbd>D</kbd></button>
+      <button class="conv-pick conv-skip" id="conv-skip" data-conv="skip">Skip <kbd>esc</kbd></button>
+    </div>
+    <p class="conv-hint" id="conv-hint">Right × 1.3 · Wrong × 0.7 · Skip × 1.0</p>
+  </div>
+</div>
 
 <script src="series-library.js"></script>
 <script src="game.js"></script>

@@ -4,5 +4,9 @@
 # Course materials — not for public repo
 Chapter 11/
 
-# Answer key — keep private so students can't peek
+# Answer keys / authoring source — keep private so students can't peek
 QUESTION_BANK_REVIEW.md
+bank-source.md
+author.html
+seed-*.md
+GENERATOR_SPEC.md
