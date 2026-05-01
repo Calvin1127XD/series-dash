@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Series Dash</title>
+<link rel="stylesheet" href="style.css">
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['$$', '$$']]
+    },
+    svg: { fontCache: 'global' },
+    startup: { typeset: false }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+</head>
+<body>
+
+<main id="title-screen" class="screen">
+  <h1 class="brand">Series<span class="dash">Dash</span></h1>
+  <p class="tagline">Pick the BEST test. Beat the timer. Don't blink.</p>
+  <div class="rules">
+    <ul>
+      <li>Only the <b>single best</b> test counts — overkill (e.g. Ratio on a geometric series) is wrong.</li>
+      <li>Wrong answer or timeout costs a life. <b>3 lives</b> total.</li>
+      <li>Optional Convergent / Divergent guess: <b>±50</b> bonus points.</li>
+      <li>Picking <b>Divergence Test</b> auto-claims "diverges"; picking <b>AST</b> auto-claims "converges" — bonus applied automatically unless you've already picked the opposite.</li>
+    </ul>
+  </div>
+  <div class="mode-select">
+    <button id="start-dash" class="mode-card">
+      <div class="mode-name">Dash</div>
+      <div class="mode-meta">15 s start · −0.5 s per correct · floor 3 s</div>
+      <div class="mode-blurb">Speed pressure. Gets harder as you go.</div>
+    </button>
+    <button id="start-stress" class="mode-card stress">
+      <div class="mode-name">Stress-Free</div>
+      <div class="mode-meta">60 s flat · no decrement</div>
+      <div class="mode-blurb">Practice mode. Take your time, drill the patterns.</div>
+    </button>
+  </div>
+  <p class="hint">Tip: number keys <kbd>1</kbd>–<kbd>9</kbd> map to the test buttons (reading order).</p>
+</main>
+
+<main id="game-screen" class="screen hidden">
+  <div class="mode-pill" id="mode-pill">Dash</div>
+  <div class="hud">
+    <div class="hud-item"><span class="lbl">Score</span><span id="score">0</span></div>
+    <div class="hud-item"><span class="lbl">Streak</span><span id="streak">0</span></div>
+    <div class="hud-item"><span class="lbl">Lives</span><span id="lives">●●●</span></div>
+    <div class="hud-item"><span class="lbl">Budget</span><span id="budget">15.0s</span></div>
+    <div class="hud-item"><span class="lbl">Best</span><span id="hi-score">0</span></div>
+  </div>
+
+  <div class="timer-shell">
+    <div class="timer-bar" id="timer-bar"></div>
+    <span class="timer-text" id="timer-text">15.0</span>
+  </div>
+
+  <section class="series-stage">
+    <div class="series-frame" id="series-frame">
+      <div class="series" id="series"></div>
+    </div>
+  </section>
+
+  <section class="buttons-grid" id="tests-grid">
+    <!-- populated by JS -->
+  </section>
+
+  <div class="feedback" id="feedback"></div>
+</main>
+
+<main id="game-over-screen" class="screen hidden">
+  <h2 class="brand small">Run over.</h2>
+  <p class="final-line">Mode: <span id="final-mode" class="num">Dash</span></p>
+  <p class="final-line">Final score: <span id="final-score" class="num">0</span></p>
+  <p class="final-line">Best streak: <span id="final-streak" class="num">0</span></p>
+  <p class="final-line">Best ever (this mode): <span id="final-best" class="num">0</span></p>
+  <div class="over-actions">
+    <button id="restart-btn" class="big-btn">Run again</button>
+    <button id="menu-btn" class="secondary-btn">Change mode</button>
+  </div>
+</main>
+
+<script src="series-library.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
