@@ -68,6 +68,7 @@ const finalScoreLine  = $('final-score-line');
 const finalStreakEl   = $('final-streak');
 const finalBestEl     = $('final-best');
 const finalBestLine   = $('final-best-line');
+const newHiBadge      = $('new-hi-badge');
 const hudScore        = $('hud-score');
 const hudBest         = $('hud-best');
 const scoreEl         = $('score');
@@ -531,11 +532,17 @@ function gameOver() {
     finalScoreLine.style.display = '';
     finalBestLine.style.display = '';
     finalScoreEl.textContent = state.score;
-    if (state.score > getHi()) setHi(state.score);
+    const prevHi = getHi();
+    const beatHi = state.score > prevHi;
+    if (beatHi) setHi(state.score);
     finalBestEl.textContent  = getHi();
+    finalScoreLine.classList.toggle('hi-beat', beatHi);
+    finalBestLine.classList.toggle('hi-beat', beatHi);
+    newHiBadge.classList.toggle('hidden', !beatHi);
   } else {
     finalScoreLine.style.display = 'none';
     finalBestLine.style.display = 'none';
+    newHiBadge.classList.add('hidden');
   }
   finalStreakEl.textContent = state.bestStreak;
   renderReview();

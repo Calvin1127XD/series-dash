@@ -588,6 +588,32 @@ html, body {
   font-size: 28px;
   margin-left: 8px;
 }
+.final-line.hi-beat .num {
+  background: linear-gradient(120deg, var(--accent) 0%, var(--accent-2) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.new-hi-badge {
+  display: inline-block;
+  margin-left: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #0a0d14;
+  background: linear-gradient(120deg, var(--accent) 0%, var(--accent-2) 100%);
+  box-shadow: 0 8px 24px -10px var(--accent-2);
+  vertical-align: middle;
+  animation: new-hi-pulse 1.4s ease-in-out infinite;
+}
+@keyframes new-hi-pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.06); }
+}
 
 /* ---------- Review list ---------- */
 .review-section {
